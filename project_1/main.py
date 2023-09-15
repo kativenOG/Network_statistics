@@ -1,72 +1,62 @@
 from lib.all import *
-
-import numpy as np 
-import random 
-import argparse
-
-parser = argparse.ArgumentParser(prog='Testing Spectral Clustering Metrics')
-
-   
+import os,shutil
 
 if __name__ == "__main__":
 
     args = args_getter()
+    # Lets get rid of old output repositories and create a new one 
+    if os.path.isdir(args.output_dir):  
+        shutil.rmtree(os.path.join(os.getcwd(),args.output_dir))
+    os.mkdir(os.path.join(os.getcwd(),args.output_dir))
+
+    # Setting up the mode for the CLI 
     karate_flag,sbm_flag= False, False  
     if args.mode == "all": karate_flag,sbm_flag = True,True
     elif args.mode == "sbm": sbm_flag = True
     elif args.mode == "kc": karate_flag = True
-    
+
+    # Checking if we got multiple values from command line in the n_vals argument  
+    if not isinstance(args.n_vals,list): n_vals = [args.n_vals]
+    else: n_vals = args.n_vals
+
+    # Running Simulations:
     k_scores, sbm_scores = None, []
     if karate_flag: 
-        k_scores = karate_club_test(args.n_init) 
-    
+        k_scores = np.array(karate_club_test(args.n_init,args.verbose))
+
     if sbm_flag: 
-        sizes,sparse_ps,gts,dense_p =generateSBMParams(args.n_classes,args.n_vals)
+        sizes,sparse_ps,gts,dense_p =generateSBMParams(args.n_classes,n_vals)
         sbm_score = {} 
         for  s,sparse_p,gt in zip(sizes,sparse_ps,gts):
-            sbm_score["sparse"] = sbm_test(s,sparse_p,gt,args.n_init)
-            sbm_score["dense"] = sbm_test(s,dense_p,gt,args.n_init)
-        sbm_scores.append(sbm_score)
+            sbm_score["sparse"] = sbm_test(s,sparse_p,gt,args.n_init,args.verbose)
+            sbm_score["dense"] = sbm_test(s,dense_p,gt,args.n_init,args.verbose)
+            sbm_scores.append(sbm_score)
 
-    # # SBM Random Graph: 
-    # # Variables: 
-    # n_classes = 10
-    # N1,N2 = 1000,10000
-    # sizes1,sizes2 = [N1//n_classes]*n_classes,[N2//n_classes]*n_classes
-    # gt1,gt2 = np.array([[val]*(N1//n_classes) for val in range(10)]), np.array([[val]*(N2//n_classes) for val in range(10)])
-    # gt1,gt2 = gt1.flatten(),gt2.flatten()
-    # # P, edge prob between 2 classes, defines if our matrix is dense or not
-    # dense_p = np.array([random.uniform(0,1)]*(n_classes*n_classes))
-    # dense_p = np.reshape(dense_p,(n_classes,n_classes))
-    # sparse_p1,sparse_p2 = np.array([random.uniform(0,N1)/N1 for _ in range(pow(n_classes,2))]),np.array([random.uniform(0,N2)/N2 for _ in range(pow(n_classes,2))])
-    # sparse_p1,sparse_p2 =  np.reshape(sparse_p1,(n_classes,n_classes)), np.reshape(sparse_p2,(n_classes,n_classes))
+    # Saving the logs 
+    if args.save_log == True: 
+        log_file = open(os.path.join(args.output_dir,"log_file.txt"),"w")
+        if karate_flag: log_file.write(f"Karate Club Graph Data:\n{k_scores}\n")
+        if sbm_flag: 
+            log_file.write(f"Stocastic Block Model Graph Data:\n")
+            for n,s in zip(n_vals,sbm_scores): log_file.write(f"n={n}:\n{s}\n")
+        log_file.close()
 
-    # # Dense with N1
-    # adj_mat,len_classes = SBMGenerator(sizes1,dense_p)
-    # sbmscores_dense1 = [] 
-    # sbmscores_dense1.append(applySpectral(len_classes,adj_mat,gt1,n_init=N_INIT))
-    # sbmscores_dense1.append(applySpectral(len_classes,adj_mat,gt1,assign_labels="discretize")[1])
-    # sbmscores_dense1.append(applySpectral(len_classes,adj_mat,gt1,assign_labels="cluster_qr")[1])
-    # sbmscores_dense1.append(applyKMeans(len_classes,adj_mat,gt1,N_INIT)[1]) 
-    # # Dense with N2
-    # adj_mat,len_classes = SBMGenerator(sizes2,dense_p)
-    # sbmscores_dense2 = [] 
-    # sbmscores_dense2.append(applySpectral(len_classes,adj_mat,gt2,n_init=N_INIT))
-    # sbmscores_dense2.append(applySpectral(len_classes,adj_mat,gt2,assign_labels="discretize")[1])
-    # sbmscores_dense2.append(applySpectral(len_classes,adj_mat,gt2,assign_labels="cluster_qr")[1])
-    # sbmscores_dense2.append(applyKMeans(len_classes,adj_mat,gt2,N_INIT)[1]) 
-    # # Sparse with N1
-    # adj_mat,len_classes = SBMGenerator(sizes1,sparse_p1)
-    # sbmscores_sparse1 = [] 
-    # sbmscores_sparse1.append(applySpectral(len_classes,adj_mat,gt1,n_init=N_INIT))
-    # sbmscores_sparse1.append(applySpectral(len_classes,adj_mat,gt1,assign_labels="discretize")[1])
-    # sbmscores_sparse1.append(applySpectral(len_classes,adj_mat,gt1,assign_labels="cluster_qr")[1])
-    # sbmscores_sparse1.append(applyKMeans(len_classes,adj_mat,gt1,N_INIT)[1]) 
-    # # Sparse with N2
-    # adj_mat,len_classes = SBMGenerator(sizes2,sparse_p2)
-    # sbmscores_sparse2 = [] 
-    # sbmscores_sparse2.append(applySpectral(len_classes,adj_mat,gt2,n_init=N_INIT))
-    # sbmscores_sparse2.append(applySpectral(len_classes,adj_mat,gt2,assign_labels="discretize")[1])
-    # sbmscores_sparse2.append(applySpectral(len_classes,adj_mat,gt2,assign_labels="cluster_qr")[1])
-    # sbmscores_sparse2.append(applyKMeans(len_classes,adj_mat,gt2,N_INIT)[1]) 
-
+    # Plotting the Data 
+    if args.plt == True: 
+        if args.verbose: print("PLOTTING:")
+        score_names = ["AMI and MI","ARI and RI"]
+        x_labels = ["S-kmeans","S-discretize","S-cluster_qr","kmeans"]
+        if karate_flag:
+            if args.verbose: print("Karate Club")
+            for i,names in enumerate(score_names):
+                plot_scores("Karate Club\n"+names,x_labels,k_scores[:,i],args.output_dir,"karate_"+names+".png") 
+        if sbm_flag:
+            for n,vals in zip(n_vals,sbm_scores):
+                if args.verbose: print(f"SBM with N= {n}")
+                vals["dense"],vals["sparse"] = np.array(vals["dense"]), np.array(vals["sparse"])
+                for i,names in enumerate(score_names):
+                    if args.verbose: print("DENSE GRAPH")
+                    plot_scores(f"SBM Dense with n={n}\n"+names,x_labels,vals["dense"][:,i],args.output_dir,"sbm_"+f"dense_{str(n)}_"+names+".png") 
+                    if args.verbose: print("SPARSE GRAPH")
+                    plot_scores(f"SBM Sparse with n={n}\n"+names,x_labels,vals["sparse"][:,i],args.output_dir,"sbm_"+f"sparse_{str(n)}_"+names+".png") 
+         
