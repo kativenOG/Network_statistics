@@ -9,5 +9,5 @@ bash installer.sh
 cd ..
 source networkStats/bin/activate
 cd project_1
-python3 main.py --mode "all" --save_log True --plt 1 --verbose True --n_vals 10 100 1000
+python3 main.py --mode "all" --save_log True --plt True --verbose True --n_vals 10 100 1000
 ```

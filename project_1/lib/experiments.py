@@ -44,7 +44,7 @@ def sbm_test(sizes,P,gt,n_init,verbose,sparse=False):
     """
     Stocastic Block Model main function 
     """
-    adj_mat,len_classes = SBMGenerator(sizes,P,verbose,sparse=sparse)
+    adj_mat,len_classes = SBMGenerator(sizes,P,verbose=verbose,sparse=sparse)
     scores = [] 
     scores.append(applySpectral(len_classes,adj_mat,gt,n_init=n_init,verbose=verbose))
     scores.append(applySpectral(len_classes,adj_mat,gt,assign_labels="discretize",verbose=verbose))

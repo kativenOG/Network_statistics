@@ -1,16 +1,17 @@
 import argparse
+import distutils
 
 parser = argparse.ArgumentParser(prog='Testing Spectral Clustering Metrics')
 
 parser.add_argument('--mode', metavar='N', type=str, default="all",choices=["all","kc","sbm"],
                     help='Decide which is the right output for the CLI.')
-parser.add_argument('--verbose', metavar='N', type=bool,default=True,
+parser.add_argument('--verbose', metavar='N', default=False,type=lambda x: True if x=="True" else False,
                     help='Print what the script is doing in stdout.')
 parser.add_argument('--n_init', metavar='N', type=int,default=100,
                     help='Number of iterations for k_means.')
-parser.add_argument('--save_log', metavar='N', type=bool,default=False,
+parser.add_argument('--save_log', metavar='N', default=False,type=lambda x: True if x=="True" else False,
                     help='Create a file containing all of the logs.')
-parser.add_argument('--plt', metavar='N', type=bool,default=True,
+parser.add_argument('--plt', metavar='N', default=True,type=lambda x: True if x=="True" else False,
                     help='Plot the generated data')
 parser.add_argument('--n_vals', metavar='N', type=int,default=100,nargs="+",
                     help='Number of vertices for SBM.')
