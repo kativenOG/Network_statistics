@@ -40,11 +40,11 @@ def generateSBMParams(n_classes,n):
     dense_p = np.reshape(dense_p,(n_classes,n_classes))
     return tuple(sizes),tuple(sparse_ps),tuple(gts),dense_p
 
-def sbm_test(sizes,P,gt,n_init,verbose):
+def sbm_test(sizes,P,gt,n_init,verbose,sparse=False):
     """
     Stocastic Block Model main function 
     """
-    adj_mat,len_classes = SBMGenerator(sizes,P,verbose)
+    adj_mat,len_classes = SBMGenerator(sizes,P,verbose,sparse=sparse)
     scores = [] 
     scores.append(applySpectral(len_classes,adj_mat,gt,n_init=n_init,verbose=verbose))
     scores.append(applySpectral(len_classes,adj_mat,gt,assign_labels="discretize",verbose=verbose))

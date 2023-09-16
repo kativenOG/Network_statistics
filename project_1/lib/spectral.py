@@ -71,9 +71,9 @@ def karateClubGenerator(verbose=True):
     len_classes = len(set(gt))
     return adj_mat,len_classes,gt 
 
-def SBMGenerator(sizes,p,sparse=False,verbose=True):
+def SBMGenerator(sizes,p,verbose=True,sparse=False):
     if verbose: print(f"{'SPARSE' if sparse else ''} STOCHASTIC BLOCK MODEL GRAPH:")
-    G = nx.stochastic_block_model(sizes,p=p,sparse=sparse)
+    G = nx.stochastic_block_model(sizes,p=p,envsparse=sparse)
     adj_mat = nx.to_numpy_array(G) # Return the graph adjacency matrix as a NumPy matrix.
     len_classes = len(sizes)
     return adj_mat,len_classes

@@ -28,8 +28,8 @@ if __name__ == "__main__":
         sizes,sparse_ps,gts,dense_p =generateSBMParams(args.n_classes,n_vals)
         sbm_score = {} 
         for  s,sparse_p,gt in zip(sizes,sparse_ps,gts):
-            sbm_score["sparse"] = sbm_test(s,sparse_p,gt,args.n_init,args.verbose)
-            sbm_score["dense"] = sbm_test(s,dense_p,gt,args.n_init,args.verbose)
+            sbm_score["sparse"] = sbm_test(s,sparse_p,gt,args.n_init,args.verbose,sparse=True)
+            sbm_score["dense"] = sbm_test(s,dense_p,gt,args.n_init,args.verbose,sparse=False)
             sbm_scores.append(sbm_score)
 
     # Saving the logs 
