@@ -1,5 +1,4 @@
 import argparse
-import distutils
 
 parser = argparse.ArgumentParser(prog='Testing Spectral Clustering Metrics')
 
