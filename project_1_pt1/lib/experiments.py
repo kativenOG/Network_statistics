@@ -52,4 +52,3 @@ def sbm_test(sizes,P,gt,n_init,verbose,sparse=False):
     scores.append(applyKMeans(len_classes,adj_mat,gt,n_init,verbose=verbose)) 
     return scores 
 
-

@@ -1,7 +1,10 @@
+from networkx import adjacency_matrix
 from lib.all import *
-import os,shutil
+import os,shutil,warnings
 
 if __name__ == "__main__":
+    # Ignore warnings 
+    warnings.filterwarnings("ignore") 
 
     args = args_getter()
     # Lets get rid of old output repositories and create a new one 
@@ -10,10 +13,12 @@ if __name__ == "__main__":
     os.mkdir(os.path.join(os.getcwd(),args.output_dir))
 
     # Setting up the mode for the CLI 
-    karate_flag,sbm_flag= False, False  
-    if args.mode == "all": karate_flag,sbm_flag = True,True
+    # ns_flag = False
+    karate_flag,sbm_flag= False, False
+    if args.mode == "all": karate_flag,sbm_flag= True,True # ns_flag=True
     elif args.mode == "sbm": sbm_flag = True
     elif args.mode == "kc": karate_flag = True
+    # elif args.mode == "ns": ns_flag= True
 
     # Checking if we got multiple values from command line in the n_vals argument  
     if not isinstance(args.n_vals,list): n_vals = [args.n_vals]
@@ -31,6 +36,10 @@ if __name__ == "__main__":
             sbm_score["sparse"] = sbm_test(s,sparse_p,gt,args.n_init,args.verbose,sparse=True)
             sbm_score["dense"] = sbm_test(s,dense_p,gt,args.n_init,args.verbose,sparse=False)
             sbm_scores.append(sbm_score)
+
+    # if ns_flag:
+    #     G,adj = ns_generator() 
+         
 
     # Saving the logs 
     if args.save_log == True: 

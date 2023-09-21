@@ -2,7 +2,7 @@ import argparse
 
 parser = argparse.ArgumentParser(prog='Testing Spectral Clustering Metrics')
 
-parser.add_argument('--mode', metavar='N', type=str, default="all",choices=["all","kc","sbm"],
+parser.add_argument('--mode', metavar='N', type=str, default="all",choices=["all","kc","sbm"], # ,"ns"],
                     help='Decide which is the right output for the CLI.')
 parser.add_argument('--verbose', metavar='N', default=False,type=lambda x: True if x=="True" else False,
                     help='Print what the script is doing in stdout.')

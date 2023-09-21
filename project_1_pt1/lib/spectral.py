@@ -3,7 +3,7 @@ from sklearn.cluster import SpectralClustering,KMeans
 import matplotlib.pyplot as plt
 import networkx as nx 
 from sklearn import metrics
-import os 
+import os,subprocess,shutil
 
 def applyKMeans(n_classes,adj_mat,gt,n_init,verbose=True):
     """
@@ -77,4 +77,27 @@ def SBMGenerator(sizes,p,verbose=True,sparse=False):
     adj_mat = nx.to_numpy_array(G) # Return the graph adjacency matrix as a NumPy matrix.
     len_classes = len(sizes)
     return adj_mat,len_classes
+
+def ns_generator():
+    # Get rid of old repositories if present (just to be sure)
+    dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"dimacs10-netscience")
+    if os.path.isdir(dir1): shutil.rmtree(dir1)
+    if os.path.isdir(dir2): shutil.rmtree(dir2)
+
+    # Download the dataset and unzip it 
+    subprocess.run(["wget","-P","{}","http://konect.cc/files/download.tsv.dimacs10-netscience.tar.bz2"])
+    subprocess.run(["bzip2","-d","{}/download.tsv.dimacs10-netscience.tar.bz2"])
+    subprocess.run(["tar","-xf","{}/download.tsv.dimacs10-netscience.tar"])
+     
+    # Remove the first line from the Adjecency file
+    with open("dimacs10-netscience/out.dimacs10-netscience","r") as f:
+        lines = f.readlines()        
+    with open("dimacs10-netscience/out.dimacs10-netscience","w") as f:
+        for line in lines[1:]: f.write(line)
+
+    # Create a graph and get rid of the dataset files
+    G =  nx.read_adjlist("dimacs10-netscience/out.dimacs10-netscience")
+    subprocess.run(["rm","-rf","{}","dimacs10-netscience"])
+    adj_mat = nx.to_numpy_array(G) # Return the graph adjacency matrix as a NumPy matrix.
+    return G,adj_mat
 
