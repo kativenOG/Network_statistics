@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 class vector_clustering(): 
 
-    def __init__(self,eigen_vecs,methods,n_clusters,epsilon) -> None:
-        if methods == "all": self.methods = ["all","kmeans","discretize","knn","cluster_qr","DBScan"]
+    def __init__(self,eigen_vecs,methods,n_clusters,epsilon=3) -> None:
+        if methods == "all": self.methods = ["kmeans","discretize","cluster_qr","DBScan"]
         else: self.methods = [methods]
         self.n_clusters = n_clusters
         self.vectors = eigen_vecs 
@@ -18,7 +18,6 @@ class vector_clustering():
         self.minPts  = len(eigen_vecs[0]) + 1 # Usually the number of dimensions (eigen_values) + 1 is used as a starting point
         if self.minPts < 3: self.minPts = 3   # The value shouldn't be lower than 3 
  
-
     def cluster(self) -> dict:
         """
         Normal main function for the class, used to run all the different clustering algorithms 
@@ -35,22 +34,34 @@ class vector_clustering():
         Other function for the class, used to plot the distance matrix to compute the epsilon 
         for the DBSCAN algorithm.
         """
-        distance_matrix, distance_metric = [], DistanceMetric("euclidian")
+        # create distance Matrix 
+        distance_matrix, distance_metric = [], DistanceMetric().get_metric("euclidean")
+        x_shape,y_shape = list(self.vectors[0].shape),list(self.vectors[0].shape)
+        x_shape.insert(0,1)
+        y_shape.insert(0,1)
+        x_shape,y_shape = tuple(x_shape),tuple(y_shape)
+        for x,y in product(self.vectors,self.vectors):
+            x,y = np.reshape(x,x_shape),np.reshape(y,y_shape)
+            euclidian_distance = distance_metric.pairwise(x,y)
+            distance_matrix.append(euclidian_distance[0])
+        print("Done Calculating")
+
+        # Plot:
         SHAPE =  tuple([len(self.vectors),len(self.vectors)])
-        for x,y in product(self.vectors.rows,self.vectors):
-            distance_matrix.append(distance_metric.pairwise([x],[y]))
         distance_matrix = np.reshape(np.array(distance_matrix),SHAPE)
-        plt.plot(list(range(0,SHAPE[0])),distance_matrix[:,self.minPts])
+        plt.plot(list(range(0,SHAPE[0])),distance_matrix[:,self.minPts],"r")
+        plt.plot(list(range(0,SHAPE[0])),distance_matrix[self.minPts,:],"b")
         plt.show() 
+        plt.savefig("distance_graph.png")
 
     def kmeans(self):
         clustering = KMeans(n_clusters=self.n_clusters).fit(self.vectors) 
-        return clustering .labels_
+        return clustering.labels_
 
     def DBScan(self):
         """
         Parameters: 
-            - epsilon: Maximum radius for wich 2 points are considered neighbors  
+            - epsilon: Maximum radius for wich points are considered neighbors of each other
             - minPts:  Minumum number of nodes needed to create a new cluster (has to be greater than 3).
         Main algorithm:
          We start with the data points and values of epsilon and minPts as input:
