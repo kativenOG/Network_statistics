@@ -29,7 +29,7 @@ if __name__ == "__main__":
         for exp,result in results.items(): print(f"In {exp} the result was: {result}")
     
     # Save Logs of counter in classes  
-    save_counter_log(results,args.verbose,full_path,args.log)
+    save_counter_log(results,args.verbose,full_path,args.save_log)
     # Plots and Metrics:
     if args.plt:
         if args.verbose: print("Plot of the Initial Graph (no clustering)")
@@ -38,5 +38,5 @@ if __name__ == "__main__":
         for clustering_method,result in results.items():
             if args.verbose: print(f"Plot of the Graph using spectral clustering and {clustering_method}!")
             title = os.path.join(full_path,str(clustering_method.upper() + "_plot.png"))
-            draw_network(G,title)
+            draw_network(G,title,gt=result)
 

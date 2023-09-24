@@ -37,18 +37,16 @@ def prune_graph(G,pruning_factor=3):
             try: 
                 if G.nodes[node]: G.remove_node(node)
             except: 
-                e_message = """
-                            The node has already been removed and doesnt exist anymore!
+                e_message = """The node has already been removed and doesnt exist anymore!
                             ( shouldn't happen because we are removing connected components, 
-                             so if there is a bigger subgraph these 2 should be remvoed together )
-                            """
+                             so if there is a bigger subgraph these 2 should be remvoed together )"""
                 print(e_message)
 
 def ccn_wrapper(G):
     return nx.number_connected_components(G)
 
 def draw_network(G,file_name,gt=None):
-    if gt != None:
+    if isinstance(gt,list):
         color_lookup =  sorted(set(gt))#{k:v for v, k in enumerate(sorted(set(gt)))}
         low, high  = color_lookup[0],color_lookup[-1]
         norm = mpl.colors.Normalize(vmin=low, vmax=high, clip=True)
