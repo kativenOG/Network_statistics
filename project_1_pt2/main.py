@@ -1,5 +1,5 @@
+import warnings,os 
 from lib.all import * 
-import warnings 
 
 if __name__ == "__main__":
     # STD stuff 
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     laplacian = generate_laplacian(G,adj_mat)
     
     # Solving the Eigen Problem 
-    vals_disjoint, vecs_disjoint = eigen_problem(laplacian,n_class=args.n_class,n_cc = n_cc)
+    vals_disjoint, vecs_disjoint = eigen_problem(laplacian,n_class=args.n_class,n_cc = n_cc,eigen_gap=args.eigen_gap)
     if args.verbose: print(f"Eigen values{vals_disjoint.shape}:\n{vals_disjoint}\n\nEigen Vectors{vecs_disjoint.shape}:\n{vecs_disjoint}")
 
     # Clustering the Eigen Vectors

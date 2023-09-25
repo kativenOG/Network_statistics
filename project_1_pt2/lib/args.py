@@ -13,6 +13,8 @@ parser.add_argument('--save_log', metavar='N', default=True,type=lambda x: True 
                     help='Decide if it has to save the log file or not')
 
 # Cluster Parameters  
+parser.add_argument('--eigen_gap', metavar='N', default=-1,type=int,
+                    help='Index for the slicing during eigen gap process, if the value is set to -1 the user will be prompted to insert the input via stdin')
 parser.add_argument('--cluster_method', metavar='N', type=str, default="all",choices= ["all","kmeans","discretize","cluster_qr","DBScan",], #"knn"
                     help='Wich clustering methods has to be used on eigen Vectors.')
 parser.add_argument('--n_class', metavar='N', type=int, default=20,
@@ -23,7 +25,7 @@ parser.add_argument('--laplacian', metavar='N', type=str, default="unnormalized"
 # Graph Pruning Parameters
 parser.add_argument('--pruning', metavar='N', default=True,type=lambda x: True if x=="True" else False,
                     help='If we prune the graph or not')
-parser.add_argument('--pruning_factor', metavar='N', type=int, default=3,
+parser.add_argument('--pruning_factor', metavar='N', type=int, default=20,
                     help='Factor for the maximum size of the connected components that get pruned')
 
 def args_getter(): return parser.parse_args()

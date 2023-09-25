@@ -6,6 +6,7 @@ from scipy.sparse import csc_matrix
 from sklearn.cluster import KMeans,DBSCAN
 from itertools import product
 import matplotlib.pyplot as plt
+import os 
 
 class vector_clustering(): 
 
@@ -25,11 +26,11 @@ class vector_clustering():
         """
         result_labels = {}
         for method in self.methods :
-            func = getattr(self, method)
-            result_labels[method] = func()
+            clustering_method= getattr(self, method)
+            result_labels[method] = clustering_method()
         return result_labels 
 
-    def plot_distance_for_epsilon(self): 
+    def plot_distance_for_epsilon(self,file_pos): 
         """
         Other function for the class, used to plot the distance matrix to compute the epsilon 
         for the DBSCAN algorithm.
@@ -52,7 +53,7 @@ class vector_clustering():
         plt.plot(list(range(0,SHAPE[0])),distance_matrix[:,self.minPts],"r")
         plt.plot(list(range(0,SHAPE[0])),distance_matrix[self.minPts,:],"b")
         plt.show() 
-        plt.savefig("distance_graph.png")
+        plt.savefig(os.path.join(file_pos,"distance_graph.png"))
 
     def kmeans(self):
         clustering = KMeans(n_clusters=self.n_clusters).fit(self.vectors) 

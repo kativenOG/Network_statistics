@@ -24,20 +24,20 @@ def ns_generator(pruning=True,pruning_factor = 3):
     # Create a graph and get rid of the dataset files
     G =  nx.read_adjlist("dimacs10-netscience/out.dimacs10-netscience")
     subprocess.run(["rm","-rf","{}","dimacs10-netscience"])
-    if pruning: 
-        print("Pruning")
-        G = prune_graph(G,pruning_factor)
-    adj_mat = nx.to_numpy_array(G) # Return the graph adjacency matrix as a NumPy matrix.
+    # Pruning the Graph before infeering the adjacency matrix  
+    if pruning:  G = prune_graph(G,pruning_factor)
+    adj_mat = nx.to_numpy_array(G)  # Return the graph adjacency matrix as a NumPy matrix.
 
     return G,adj_mat
 
-def prune_graph(G,pruning_factor=3):
+def prune_graph(G,pruning_factor=20):
+    # print(sorted([len(component) for component in nx.connected_components(G)])) # Debugging purposes
     sorted_cc = sorted([component for component in nx.connected_components(G) if len(component)<pruning_factor] , key=len, reverse=True)
+    
     for component in sorted_cc:
         # If lenght of component less than pruning factor remove all this nodes from G 
         for node in component: 
-            try: 
-                G.remove_node(node)
+            try:  G.remove_node(node)
             except: 
                 e_message = """The node has already been removed and doesnt exist anymore!
                             ( shouldn't happen because we are removing connected components, 
@@ -54,7 +54,9 @@ def draw_network(G,file_name,gt=None):
         low, high  = color_lookup[0],color_lookup[-1]
         norm = mpl.colors.Normalize(vmin=low, vmax=high, clip=True)
         mapper = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.coolwarm)
-        nx.draw_networkx(G,node_color= [mapper.to_rgba(val) for val in gt])
+        node_color = [mapper.to_rgba(val) for val in gt]
+        print(f"Node Colors for reference: {node_color}")
+        nx.draw_networkx(G,node_color=node_color)
     else: nx.draw_networkx(G)
 
     plt.show()
