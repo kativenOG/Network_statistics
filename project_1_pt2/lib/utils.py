@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import networkx as nx 
 import os,shutil,subprocess
 
-def ns_generator(pruning=False,pruning_factor = 3):
+def ns_generator(pruning=True,pruning_factor = 3):
     # Get rid of old repositories if present (just to be sure)
     dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"dimacs10-netscience")
     if os.path.isdir(dir1): shutil.rmtree(dir1)
@@ -24,7 +24,9 @@ def ns_generator(pruning=False,pruning_factor = 3):
     # Create a graph and get rid of the dataset files
     G =  nx.read_adjlist("dimacs10-netscience/out.dimacs10-netscience")
     subprocess.run(["rm","-rf","{}","dimacs10-netscience"])
-    if pruning: prune_graph(G,pruning_factor)
+    if pruning: 
+        print("Pruning")
+        G = prune_graph(G,pruning_factor)
     adj_mat = nx.to_numpy_array(G) # Return the graph adjacency matrix as a NumPy matrix.
 
     return G,adj_mat
@@ -35,12 +37,13 @@ def prune_graph(G,pruning_factor=3):
         # If lenght of component less than pruning factor remove all this nodes from G 
         for node in component: 
             try: 
-                if G.nodes[node]: G.remove_node(node)
+                G.remove_node(node)
             except: 
                 e_message = """The node has already been removed and doesnt exist anymore!
                             ( shouldn't happen because we are removing connected components, 
                              so if there is a bigger subgraph these 2 should be remvoed together )"""
                 print(e_message)
+    return G 
 
 def ccn_wrapper(G):
     return nx.number_connected_components(G)
