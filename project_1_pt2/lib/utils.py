@@ -1,7 +1,8 @@
-from collections import Counter 
+from   collections import Counter 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx 
+import numpy as np 
 import os,shutil,subprocess
 
 def ns_generator(pruning=True,pruning_factor = 3):
@@ -46,16 +47,15 @@ def prune_graph(G,pruning_factor=20):
     return G 
 
 def ccn_wrapper(G):
-    return nx.number_connected_components(G)
+    return nx.connected_components(G),nx.number_connected_components(G)
 
 def draw_network(G,file_name,gt=None):
-    if isinstance(gt,list):
+    if isinstance(gt,np.ndarray):
         color_lookup =  sorted(set(gt))#{k:v for v, k in enumerate(sorted(set(gt)))}
         low, high  = color_lookup[0],color_lookup[-1]
         norm = mpl.colors.Normalize(vmin=low, vmax=high, clip=True)
         mapper = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.coolwarm)
         node_color = [mapper.to_rgba(val) for val in gt]
-        print(f"Node Colors for reference: {node_color}")
         nx.draw_networkx(G,node_color=node_color)
     else: nx.draw_networkx(G)
 
@@ -63,14 +63,20 @@ def draw_network(G,file_name,gt=None):
     plt.savefig(file_name)
 
 
-def save_counter_log(results,verbose,dir_path,log=None):
+def save_counter_log(results,dir_path,log=None,component_id=""):
     """
     Save the results (ground truths) in a readable way using counter 
     """
-    file_string,file_name = "", os.path.join(dir_path,"log.txt")
+    file_string,file_name = "", os.path.join(dir_path,"log" + f"{component_id}" + ".txt")
     for clustering_method,result in results.items():
         counter = Counter(result) 
         file_string+= f"{clustering_method.upper()}: {counter}\n"        
     if log: open(file_name,"w+").write(file_string)
+    print(file_string)
     return 
+
+def generating_graph_view(G,cc_nodes):
+    view = G.subgraph(cc_nodes)
+    adj_mat = nx.to_numpy_array(G)
+    return  view,adj_mat
 

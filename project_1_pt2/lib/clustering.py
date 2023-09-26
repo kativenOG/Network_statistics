@@ -10,10 +10,10 @@ import os
 
 class vector_clustering(): 
 
-    def __init__(self,eigen_vecs,methods,n_clusters,epsilon=3) -> None:
+    def __init__(self,eigen_vecs,methods,epsilon=0.5) -> None:
         if methods == "all": self.methods = ["kmeans","discretize","cluster_qr","DBScan"]
         else: self.methods = [methods]
-        self.n_clusters = n_clusters
+        self.n_clusters = len(eigen_vecs[0])
         self.vectors = eigen_vecs 
         self.epsilon = epsilon 
         self.minPts  = len(eigen_vecs[0]) + 1 # Usually the number of dimensions (eigen_values) + 1 is used as a starting point
