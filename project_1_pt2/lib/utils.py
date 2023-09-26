@@ -74,10 +74,12 @@ def save_counter_log(results,verbose,dir_path,log=None):
     if log: open(file_name,"w+").write(file_string)
     return 
 
-def compute_performance(graph, partitions: dict):
+def compute_performance(graph, partitions: dict) -> dict:
+    scores = {}
     for clustering_method in partitions:
         method = clustering_method
         partition = partitions[method]
 
-        print(partition)
-    pass
+        score = nx.algorithms.community.partition_quality(graph, partition)
+        scores[method] = score
+    return scores

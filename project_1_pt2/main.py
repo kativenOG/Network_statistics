@@ -40,3 +40,5 @@ if __name__ == "__main__":
             title = os.path.join(full_path,str(clustering_method.upper() + "_plot.png"))
             draw_network(G,title,gt=result)
 
+    scores = compute_performance(G, results)
+    print(scores)
