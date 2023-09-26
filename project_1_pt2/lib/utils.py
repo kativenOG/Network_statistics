@@ -75,6 +75,9 @@ def save_counter_log(results,verbose,dir_path,log=None):
     return 
 
 def compute_performance(graph, partitions: dict) -> dict:
+    """
+    Compute metrics for the clustering partitions of the graph
+    """
     scores = {}
     for clustering_method in partitions:
         method = clustering_method
