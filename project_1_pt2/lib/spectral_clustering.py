@@ -11,7 +11,7 @@ def generate_degree(adj_matrix):
 def generate_laplacian(graph,adj_matrix,ltype="unnormalized"):
     laplacian = nx.laplacian_matrix(graph)
     D  = generate_degree(adj_matrix)
-    if ltype=="unnormalized": return laplacian 
+    if   ltype == "unnormalized": return laplacian 
     elif ltype=="symmetric": 
         inverse_squared_D = D**(-1/2)
         laplacian =  inverse_squared_D*laplacian*inverse_squared_D
@@ -22,7 +22,7 @@ def generate_laplacian(graph,adj_matrix,ltype="unnormalized"):
 
 def eigen_problem(laplacian,n_class= 20 ,n_cc=2,eigen_gap =-1):
     f_laplacian = laplacian.asfptype()
-    N,upper_bound,lower_bound= n_cc + n_class, pow(math.e,-14), -pow(math.e,-14)
+    N,upper_bound,lower_bound= n_cc + n_class, pow(1,-14), -pow(1,-14)
     print(f"Upper Bound: {upper_bound}\nLower Bound: {lower_bound}\n")
     vals_disjoint, vecs_disjoint = eigs(f_laplacian,N,which='SR')
     vals_disjoint = np.sort(vals_disjoint,).reshape(len(vals_disjoint),1)
