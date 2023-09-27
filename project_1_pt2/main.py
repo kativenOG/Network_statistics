@@ -11,7 +11,7 @@ if __name__ == "__main__":
     os.mkdir(full_path) 
 
     # Get the graph and generate the Laplacian Matrix 
-    G,adj_mat = ns_generator(args.pruning,args.pruning_factor) 
+    G,adj_mat = ns_generator(args.pruning,args.pruning_factor)
     n_cc = ccn_wrapper(G)
     if args.verbose: print(f"Number Connected Components: {n_cc}")
     laplacian = generate_laplacian(G,adj_mat)

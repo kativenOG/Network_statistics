@@ -3,27 +3,29 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import networkx as nx 
 import os,shutil,subprocess
+import numpy as np
 
 def ns_generator(pruning=True,pruning_factor = 3):
     # Get rid of old repositories if present (just to be sure)
-    dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"dimacs10-netscience")
-    if os.path.isdir(dir1): shutil.rmtree(dir1)
-    if os.path.isdir(dir2): shutil.rmtree(dir2)
+    # dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"dimacs10-netscience")
+    # if os.path.isdir(dir1): shutil.rmtree(dir1)
+    # if os.path.isdir(dir2): shutil.rmtree(dir2)
 
-    # Download the dataset and unzip it 
-    subprocess.run(["wget","-P","{}","http://konect.cc/files/download.tsv.dimacs10-netscience.tar.bz2"])
-    subprocess.run(["bzip2","-d","{}/download.tsv.dimacs10-netscience.tar.bz2"])
-    subprocess.run(["tar","-xf","{}/download.tsv.dimacs10-netscience.tar"])
+    # # Download the dataset and unzip it 
+    # subprocess.run(["wget","-P","{}","http://konect.cc/files/download.tsv.dimacs10-netscience.tar.bz2"])
+    # subprocess.run(["bzip2","-d","{}/download.tsv.dimacs10-netscience.tar.bz2"])
+    # subprocess.run(["tar","-xf","{}/download.tsv.dimacs10-netscience.tar"])
      
-    # Remove the first line from the Adjecency file
-    with open("dimacs10-netscience/out.dimacs10-netscience","r") as f:
-        lines = f.readlines()        
-    with open("dimacs10-netscience/out.dimacs10-netscience","w") as f:
-        for line in lines[1:]: f.write(line)
+    # # Remove the first line from the Adjecency file
+    # with open("dimacs10-netscience/out.dimacs10-netscience","r") as f:
+    #     lines = f.readlines()        
+    # with open("dimacs10-netscience/out.dimacs10-netscience","w") as f:
+    #     for line in lines[1:]: f.write(line)
 
     # Create a graph and get rid of the dataset files
-    G =  nx.read_adjlist("dimacs10-netscience/out.dimacs10-netscience")
-    subprocess.run(["rm","-rf","{}","dimacs10-netscience"])
+    # G =  nx.read_adjlist("dimacs10-netscience/out.dimacs10-netscience")
+    G = nx.read_adjlist("project_1_pt2/data/dimacs10-netscience/out.dimacs10-netscience")
+    # subprocess.run(["rm","-rf","{}","dimacs10-netscience"])
     # Pruning the Graph before infeering the adjacency matrix  
     if pruning:  G = prune_graph(G,pruning_factor)
     adj_mat = nx.to_numpy_array(G)  # Return the graph adjacency matrix as a NumPy matrix.
@@ -74,15 +76,30 @@ def save_counter_log(results,verbose,dir_path,log=None):
     if log: open(file_name,"w+").write(file_string)
     return 
 
-def compute_performance(graph, partitions: dict) -> dict:
+def compute_performance(graph, partitions: dict[str, np.ndarray]) -> dict:
     """
     Compute metrics for the clustering partitions of the graph
     """
     scores = {}
     for clustering_method in partitions:
         method = clustering_method
-        partition = partitions[method]
+        partition = partitions[method].tolist()   
 
-        score = nx.algorithms.community.partition_quality(graph, partition)
+        print(get_sequence(partition))     
+
+        score = nx.algorithms.community.partition_quality(graph, get_sequence(partition))
         scores[method] = score
     return scores
+
+def get_sequence(partition):
+    '''
+    reformats the partition for quality computation
+    '''
+
+    sequence: list[set] = [set() for _ in range(max(partition) + 1)]
+    
+
+    for index, membership in enumerate(partition):
+        sequence[membership].add(index+1)
+
+    return sequence    
