@@ -4,7 +4,7 @@ args = args_getter()
 
 def main(G,adj_mat,n_cc,n_class,component_id=""):
     # Do the process for the whole graph or just a single view (connected component) of it   
-    laplacian = generate_laplacian(G,adj_mat)
+    laplacian = generate_laplacian(G,adj_mat, ltype="random-walk")
     # Solving the Eigen Problem 
     vals_disjoint, vecs_disjoint = eigen_problem(laplacian,n_class=n_class,n_cc = n_cc,eigen_gap=args.eigen_gap)
     if args.verbose: print(f"Eigen values{vals_disjoint.shape}:\n{vals_disjoint}\n\nEigen Vectors{vecs_disjoint.shape}:\n{vecs_disjoint}")

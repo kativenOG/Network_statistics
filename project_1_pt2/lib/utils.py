@@ -7,24 +7,24 @@ import os,shutil,subprocess
 
 def ns_generator(pruning=True,pruning_factor = 3):
     # Get rid of old repositories if present (just to be sure)
-    dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"dimacs10-netscience")
-    if os.path.isdir(dir1): shutil.rmtree(dir1)
-    if os.path.isdir(dir2): shutil.rmtree(dir2)
-
-    # Download the dataset and unzip it 
-    subprocess.run(["wget","-P","{}","http://konect.cc/files/download.tsv.dimacs10-netscience.tar.bz2"])
-    subprocess.run(["bzip2","-d","{}/download.tsv.dimacs10-netscience.tar.bz2"])
-    subprocess.run(["tar","-xf","{}/download.tsv.dimacs10-netscience.tar"])
+    # dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"dimacs10-netscience")
+    # if os.path.isdir(dir1): shutil.rmtree(dir1)
+    # if os.path.isdir(dir2): shutil.rmtree(dir2)
+    #
+    # # Download the dataset and unzip it
+    # subprocess.run(["wget","-P","{}","http://konect.cc/files/download.tsv.dimacs10-netscience.tar.bz2"])
+    # subprocess.run(["bzip2","-d","{}/download.tsv.dimacs10-netscience.tar.bz2"])
+    # subprocess.run(["tar","-xf","{}/download.tsv.dimacs10-netscience.tar"])
      
     # Remove the first line from the Adjecency file
-    with open("dimacs10-netscience/out.dimacs10-netscience","r") as f:
+    with open("out.dimacs10-netscience","r") as f:
         lines = f.readlines()        
-    with open("dimacs10-netscience/out.dimacs10-netscience","w") as f:
+    with open("out.dimacs10-netscience","w") as f:
         for line in lines[1:]: f.write(line)
 
     # Create a graph and get rid of the dataset files
-    G =  nx.read_adjlist("dimacs10-netscience/out.dimacs10-netscience")
-    subprocess.run(["rm","-rf","{}","dimacs10-netscience"])
+    G =  nx.read_adjlist("out.dimacs10-netscience")
+    # subprocess.run(["rm","-rf","{}","dimacs10-netscience"])
     # Pruning the Graph before infeering the adjacency matrix  
     if pruning:  G = prune_graph(G,pruning_factor)
     adj_mat = nx.to_numpy_array(G)  # Return the graph adjacency matrix as a NumPy matrix.

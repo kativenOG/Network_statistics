@@ -2,6 +2,8 @@ import numpy as np
 import networkx as nx 
 import math
 from scipy.sparse.linalg import eigs
+import scipy as sp
+import scipy.sparse
 
 def generate_degree(adj_matrix):
     col_vector = np.sum(adj_matrix,axis=0)
@@ -15,9 +17,18 @@ def generate_laplacian(graph,adj_matrix,ltype="unnormalized"):
     elif ltype=="symmetric": 
         inverse_squared_D = D**(-1/2)
         laplacian =  inverse_squared_D*laplacian*inverse_squared_D
-    elif ltype=="random-walk": 
-        inverse_D= D**(-1)
-        laplacian =  inverse_D*laplacian
+    elif ltype=="random-walk":
+        # Source code from NetworkX is used for creating normalized graph
+        nodelist = list(graph)
+        A = nx.to_scipy_sparse_array(graph, nodelist=nodelist, weight='weight', format="csr")
+        n, m = A.shape
+        diags = A.sum(axis=1)
+        D = sp.sparse.csr_array(sp.sparse.spdiags(diags, 0, m, n, format="csr"))
+        with sp.errstate(divide="ignore"):
+            diags_inverse = 1.0 / np.sqrt(diags)
+        diags_inverse[np.isinf(diags_inverse)] = 0
+        ID = sp.sparse.csr_array(sp.sparse.spdiags(diags_inverse, 0, m, n, format="csr"))
+        laplacian =  ID @ laplacian
     return laplacian 
 
 def eigen_problem(laplacian,n_class= 20 ,n_cc=2,eigen_gap =-1):
