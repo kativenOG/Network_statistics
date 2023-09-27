@@ -19,7 +19,7 @@ parser.add_argument('--cluster_method', metavar='N', type=str, default="all",cho
                     help='Wich clustering methods has to be used on eigen Vectors.')
 parser.add_argument('--n_class', metavar='N', type=int, default=20,
                     help='Number of classes the codes tries to infer.')
-parser.add_argument('--laplacian', metavar='N', type=str, default="unnormalized",choices=["unnormalized","symmetric","random-walk"],
+parser.add_argument('--laplacian', metavar='N', type=str, default="random-walk",choices=["unnormalized","symmetric","random-walk"],
                     help='Diffrent types of Laplacian Matrix')
 
 # Graph Pruning Parameters
