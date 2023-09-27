@@ -3,8 +3,6 @@ import argparse
 parser = argparse.ArgumentParser(prog='Testing Spectral Clustering Metrics')
 
 # Mixed Utilities Parameters
-parser.add_argument('--verbose', metavar='N', default=True,type=lambda x: True if x=="True" else False,
-                    help='Print what the script is doing in stdout.')
 parser.add_argument('--output_dir', metavar='N', type=str, default="outputs",
                     help='Output directory for storing images and log file.')
 parser.add_argument('--plt', metavar='N', default=True,type=lambda x: True if x=="True" else False,

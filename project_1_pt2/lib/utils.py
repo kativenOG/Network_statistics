@@ -67,6 +67,7 @@ def save_counter_log(results,dir_path,log=None,component_id=""):
     """
     Save the results (ground truths) in a readable way using counter 
     """
+    if component_id != "": component_id += "st_component"
     file_string,file_name = "", os.path.join(dir_path,"log" + f"{component_id}" + ".txt")
     for clustering_method,result in results.items():
         counter = Counter(result) 
