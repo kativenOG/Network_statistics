@@ -2,9 +2,9 @@ import warnings,os
 from lib.all import * 
 args = args_getter()
 
-def main(G,adj_mat,n_cc,n_class,component_id=""):
+def main(G,n_cc,n_class,component_id=""):
     # Do the process for the whole graph or just a single view (connected component) of it   
-    laplacian = generate_laplacian(G,adj_mat)
+    laplacian = generate_laplacian(G,args.laplacian)
     # Solving the Eigen Problem 
     vals_disjoint, vecs_disjoint = eigen_problem(laplacian,n_class=n_class,n_cc = n_cc,eigen_gap=args.eigen_gap)
     print(f"Eigen values{vals_disjoint.shape}:\n{vals_disjoint}\n\nEigen Vectors{vecs_disjoint.shape}:\n{vecs_disjoint}")
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     ccs,n_cc = ccn_wrapper(G)
     # ccs = sorted(ccs,key=lambda x: len(x),reverse=True)[:args.pruning_factor] # should be useless
     print(f"Number of Connected Components: {n_cc}")
-    if not args.cc_analysis: main(G,adj_mat,n_cc,args.n_class)
+    if not args.cc_analysis: main(G,n_cc,args.n_class)
     elif args.pruning : # Doing the same stuff with Subgraphs if pruning in activated 
         print("Analyzing Every Connected Component!")
         for i,cc in enumerate(ccs): 
@@ -52,4 +52,4 @@ if __name__ == "__main__":
             n_class= ""
             while not n_class.isdigit(): n_class = input("Insert the number of classes (eigen values): ")
             view,v_adj  = generating_graph_view(G,cc)
-            main(view,v_adj,1,int(n_class),f"_component_{i+1}_")
+            main(view,1,int(n_class),f"_component_{i+1}_")

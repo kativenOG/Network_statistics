@@ -1,6 +1,5 @@
 import numpy as np
 import networkx as nx 
-import math
 from scipy.sparse.linalg import eigs
 
 def generate_degree(adj_matrix):
@@ -8,9 +7,11 @@ def generate_degree(adj_matrix):
     D = np.diag(col_vector)
     return D 
 
-def generate_laplacian(graph,adj_matrix,ltype="unnormalized"):
+def generate_laplacian(graph,ltype="unnormalized"):
+    print(f"The program is using the {ltype} laplacian\n")
     laplacian = nx.laplacian_matrix(graph)
-    D  = generate_degree(adj_matrix)
+    adj_mat = nx.to_numpy_array(graph)
+    D  = generate_degree(adj_mat)
     if   ltype == "unnormalized": return laplacian 
     elif ltype=="symmetric": 
         inverse_squared_D = D**(-1/2)
@@ -18,9 +19,11 @@ def generate_laplacian(graph,adj_matrix,ltype="unnormalized"):
     elif ltype=="random-walk": 
         inverse_D= D**(-1)
         laplacian =  inverse_D*laplacian
+    print(laplacian)
     return laplacian 
 
 def eigen_problem(laplacian,n_class= 20 ,n_cc=2,eigen_gap =-1):
+    print("Solving the Eigen_problem")
     f_laplacian = laplacian.asfptype()
     N,upper_bound,lower_bound= n_cc + n_class, pow(1,-14), -pow(1,-14)
     print(f"Upper Bound: {upper_bound}\nLower Bound: {lower_bound}\n")

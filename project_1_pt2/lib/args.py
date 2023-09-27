@@ -15,12 +15,12 @@ parser.add_argument('--cc_analysis', metavar='N', default=True,type=lambda x: Tr
                     help='do the analys for every single connected component')
 parser.add_argument('--eigen_gap', metavar='N', default=-1,type=int,
                     help='Index for the slicing during eigen gap process, if the value is set to -1 the user will be prompted to insert the input via stdin')
-parser.add_argument('--cluster_method', metavar='N', type=str, default="all",choices= ["all","kmeans","discretize","cluster_qr","DBScan",], #"knn"
-                    help='Wich clustering methods has to be used on eigen Vectors.')
+parser.add_argument('--cluster_method', metavar='N', type=str, default="all",choices= ["all","kmeans","discretize","cluster_qr","DBScan"], #"knn"
+                    help='Wich clustering methods has to be used on eigen Vectors, the options are [all,kmeans,discretize,cluster_qr",DBScan]')
 parser.add_argument('--n_class', metavar='N', type=int, default=20,
                     help='Number of classes the codes tries to infer.')
 parser.add_argument('--laplacian', metavar='N', type=str, default="unnormalized",choices=["unnormalized","symmetric","random-walk"],
-                    help='Diffrent types of Laplacian Matrix')
+                    help='Choose the Laplacian Matrix between: [unnormalized,symmetric",random-walk] ')
 
 # Graph Pruning Parameters
 parser.add_argument('--pruning', metavar='N', default=True,type=lambda x: True if x=="True" else False,
