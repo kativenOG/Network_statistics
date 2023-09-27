@@ -88,22 +88,24 @@ def compute_performance(graph, partitions: dict[str, np.ndarray]) -> dict:
         method = clustering_method
         partition = partitions[method].tolist()   
 
-        print(get_sequence(partition))     
+        sequence = get_sequence(graph, partition)
 
-        score = nx.algorithms.community.partition_quality(graph, get_sequence(partition))
+        score = nx.algorithms.community.partition_quality(graph, sequence)
         scores[method] = score
+    print(scores)
+
     return scores
 
-def get_sequence(partition):
+def get_sequence(graph, partition):
     '''
     reformats the partition for quality computation
     '''
+    nodes = list(graph)
 
     sequence: list[set] = [set() for _ in range(max(partition) + 1)]
-    
 
     for index, membership in enumerate(partition):
-        sequence[membership].add(index+1)
+        sequence[membership].add(nodes[index])
 
     return sequence    
 

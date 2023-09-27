@@ -7,14 +7,14 @@ def main(G,adj_mat,n_cc,n_class,component_id=""):
     laplacian = generate_laplacian(G,adj_mat)
     # Solving the Eigen Problem 
     vals_disjoint, vecs_disjoint = eigen_problem(laplacian,n_class=n_class,n_cc = n_cc,eigen_gap=args.eigen_gap)
-    print(f"Eigen values{vals_disjoint.shape}:\n{vals_disjoint}\n\nEigen Vectors{vecs_disjoint.shape}:\n{vecs_disjoint}")
+    # print(f"Eigen values{vals_disjoint.shape}:\n{vals_disjoint}\n\nEigen Vectors{vecs_disjoint.shape}:\n{vecs_disjoint}")
 
     # Clustering the Eigen Vectors
     c_vector= vector_clustering(vecs_disjoint,args.cluster_method,epsilon=0.5) 
     results = c_vector.cluster()
     results_shapes = [result.shape for result in results.values()]
-    print(f"Results Shape: {results_shapes}")
-    for exp,result in results.items(): print(f"In {exp} the result was: {result}")
+    # print(f"Results Shape: {results_shapes}")
+    # for exp,result in results.items(): print(f"In {exp} the result was: {result}")
     
     # Save Logs of counter in classes  
     save_counter_log(results,full_path,args.save_log,component_id)
@@ -27,7 +27,8 @@ def main(G,adj_mat,n_cc,n_class,component_id=""):
             print(f"Plot of the Graph using spectral clustering and {clustering_method}!")
             title = os.path.join(full_path,str(clustering_method.upper() + component_id + "_plot.png"))
             draw_network(G,title,gt=result)
-            
+    
+    scores = compute_performance(G, results)
 
 
 
