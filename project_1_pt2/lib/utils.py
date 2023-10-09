@@ -59,8 +59,8 @@ def draw_network(G,file_name,gt=None):
         nx.draw_networkx(G,node_color=node_color)
     else: nx.draw_networkx(G)
 
-    plt.show()
     plt.savefig(file_name)
+    plt.show()
 
 
 def save_counter_log(results,dir_path,log=None,component_id=""):
