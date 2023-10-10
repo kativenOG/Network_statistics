@@ -14,7 +14,7 @@ def cn_score(G):
     Common Neighbors score of all non existing edges of graph G. 
     """
     non_edges = nx.non_edges(G)
-    cn_score = (tuple([u,v,len(nx.common_neighbors(u,v))]) for u,v in non_edges)
+    cn_score = (tuple([u,v,len(list(nx.common_neighbors(G,u,v)))]) for u,v in non_edges)
     return sort_scores(cn_score) 
 
 
