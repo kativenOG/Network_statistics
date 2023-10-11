@@ -1,6 +1,6 @@
 import networkx as nx
 import numpy as np
-from numpy.linalg import inv
+import math
 
 def katz_index(G):
     """
@@ -15,10 +15,10 @@ def katz_index(G):
         and beta is the damping factor that controls the path weights
     """
 
-
-    L = nx.normalized_laplacian_matrix(G)
-    e = np.lingalg.eigvals(L.A)
-    beta = 1/max(e)
     I = np.identity(len(G.nodes))
-    return inv(I - nx.to_numpy_array(G)*beta)
+    L = nx.normalized_laplacian_matrix(G)
+    e = np.linalg.eigvals(L.A)
+    beta = 1/max(e)
+    score = np.linalg.inv(I - nx.to_numpy_array(G) * beta) - I
+    return score
 
