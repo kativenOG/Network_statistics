@@ -1,0 +1,65 @@
+\usetheme{default}
+
+% Text placement
+
+\setbeamerfont{block title}{size={}}
+
+\setbeamersize{text margin left=1.9cm,text margin right=1cm}
+
+\setbeamertemplate{frametitle}{\vskip1.1cm\insertframetitle\par\small\insertframesubtitle}
+
+\setbeamertemplate{footline}[frame number]
+
+% Background
+
+\pgfdeclareimage[width=\paperwidth,height=\paperheight]{bg}{tue_background}
+\setbeamertemplate{background}{\pgfuseimage{bg}}
+
+% Navigation symbols
+
+\setbeamertemplate{navigation symbols}{}
+
+% Themes
+
+\useinnertheme[shadow=true]{rounded}
+
+% Add section information
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+% Font
+
+\usefonttheme[onlymath]{serif}
+ 
+% Colors
+
+\usecolortheme{orchid}
+\usecolortheme{whale}
+
+\definecolor{tuelightblue}{cmyk}{0.2, 0.15, 0.04,  0.0}
+\definecolor{tueblue}{cmyk}{1.0, 0.93, 0.18, 0.05}
+\definecolor{tuepurple}{cmyk}{0.14, 0.97, 0.51, 0.01}
+
+\setbeamercolor{title}{fg=tueblue,bg=}
+\setbeamercolor{background canvas}{bg=}
+\setbeamercolor{palette primary}{fg=tueblue,bg=} % !<#> is transparency
+\setbeamercolor{palette secondary}{fg=tueblue, bg=tuelightblue}
+\setbeamercolor{palette tertiary}{fg=tuelightblue,bg=tueblue}
+\setbeamercolor{palette quaternary}{fg=tuepurple,bg=tuepurple}
+\setbeamercolor{example text}{fg=tuepurple, bg=blue}
+\setbeamercolor{footline}{fg=tuepurple, bg=}
+
+\usefoottemplate{%
+    \vbox to 8pt{%
+    \hfill%
+    {\bf {\color{tuelightblue} \insertframenumber/\inserttotalframenumber}}
+    }
+}
+
+
