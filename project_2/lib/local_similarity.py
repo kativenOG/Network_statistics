@@ -32,9 +32,9 @@ def leight_holme_newman_1(G):
     lhn1_score = []
     non_edges = nx.non_edges(G) 
     for u,v in non_edges:
-        denominator = list(nx.preferential_attachment(G,ebunch=[(u,v)]))[0]
-        score = nx.common_neighbors(u,v)/denominator
-        lhn1_score.append(tuple([u,v,score]))
+        denominator = list(nx.preferential_attachment(G,ebunch=[(u,v)]))[0][2]
+        score = len(list(nx.common_neighbors(G,u,v)))
+        lhn1_score.append(tuple([u,v,score/denominator]))
     return sort_scores(lhn1_score) 
 
 def preferential_attachment_wrapper(G):

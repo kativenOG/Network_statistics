@@ -1,6 +1,10 @@
+from os.path import isdir
 import networkx as nx 
 import numpy as np 
 import os,shutil,subprocess,random
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from networkx_viewer import Viewer
 
 def jazz_generator(k=10):
     """
@@ -14,6 +18,7 @@ def jazz_generator(k=10):
     # Download the dataset and unzip it 
     subprocess.run(["wget","--no-check-certificate","-P","{}","https://deim.urv.cat/~alexandre.arenas/data/xarxes/jazz.zip"])
     subprocess.run(["unzip","{}/jazz.zip"])
+     
     # Save all the lines in the Graph
     with open("jazz.net","r") as f: lines = f.readlines()        
     # Get rid of the Data 
@@ -24,6 +29,7 @@ def jazz_generator(k=10):
     dim1, dim2=len(data),len(data[0])
     array = np.array(data)
     edge_list = np.reshape(array,(dim1,dim2))[:,:2]
+     
     # Shuffle the rows :) 
     np.random.shuffle(edge_list)
     
@@ -36,6 +42,68 @@ def jazz_generator(k=10):
         edge_list = edge_list[fold_size:,:]
 
     return k_folds    
+
+def use_newtorkx_viewer(k_folds):
+    # Generate the Graph from k_folds 
+    edge_list = np.vstack(k_folds)
+    G = nx.from_edgelist(edge_list) 
+    # View it 
+    app = Viewer(G)
+    app.mainloop()
+
+def get_max_connected_component(k_folds)-> nx.Graph:
+     """
+     There is only one connected componet so the function is useless !
+     """
+     full_edge_list = np.vstack(k_folds) 
+     full_G = nx.from_edgelist(full_edge_list)
+     print(f"The number of connected components is: {len(list(nx.connected_components(full_G)))}\n")
+     max_cc = max(nx.connected_components(full_G))
+     G = nx.subgraph(full_G,max_cc)
+     return G 
+
+def plot_full_graph(k_folds,with_labels=False,edge_color = "white",using_ipynb=False,save_plt=True):#,pos=nx.spring_layout):
+    # Generate the Graph from k_folds and return only biggest cc (for this dataset is only 1 cc) 
+    G = get_max_connected_component(k_folds)
+
+    # Image figure 
+    fig = None
+    fig = plt.figure(figsize=(50,50),facecolor="black") # In inches, !!! Doesn't Work !!! 
+
+    # Change plt background color and size
+    plt.axis('equal') 
+    ax1 = plt.axes()
+    ax1.set_facecolor("black")     
+
+    
+    # Set node sizes based on node degree
+    node_sizes = list(map(lambda x: x[1]+25,G.degree()))
+
+    # Assign node color based on the degree values
+    color_lookup =  sorted(set(node_sizes))#{k:v for v, k in enumerate(sorted(set(gt)))}
+    low, high  = color_lookup[0],color_lookup[-1]
+    norm = mpl.colors.Normalize(vmin=low, vmax=high, clip=True)
+    mapper = mpl.cm.ScalarMappable(norm=norm, cmap=mpl.cm.coolwarm)
+    node_color = [mapper.to_rgba(val) for val in node_sizes]
+    
+    # Plot graph 
+    nx.draw_networkx(G,node_size=node_sizes,
+                     with_labels=with_labels,
+                     edge_color=edge_color,
+                     node_color=node_color,
+                     pos=nx.spring_layout(G,k=2)) #=pos(G))
+    if using_ipynb: plt.show
+    else: plt.show()
+
+    # Save plt
+    if save_plt:
+        if not os.path.isdir("figures"): os.mkdir("figures")
+        if fig!=None:
+            fig.savefig(os.path.join("figures","graph.png")) 
+            plt.savefig(os.path.join("figures","graph.svg")) 
+        else:
+            plt.savefig(os.path.join("figures","graph.png"), dpi=1000)
+            plt.savefig(os.path.join("figures","graph.pdf")) 
 
 def train_probe_split(k_folds,probe_index):
     train_set,probe_set  = np.zeros((1,k_folds[0].shape[1])),0
@@ -90,13 +158,10 @@ def auc_metric(scores,train_set,probe_set,n=100,seed=1234):
         elif probe_score == non_edge_score: n_2+=1   
 
     return (n_1+(0.5*n_2))/n
-    
 
 
 ##### For Testing ###########
 if __name__ == "__main__":
     k_folds = jazz_generator() 
-    print(f"Number of fodls: {len(k_folds)}")
-    for fold in k_folds:
-        print(fold.shape)
-    # print(f"Graph:\n{G}\nADJ:\n{adj}")
+    plot_full_graph(k_folds) 
+    # use_newtorkx_viewer(k_folds) 
