@@ -118,16 +118,22 @@ def from_el_to_nx(edge_list):
     adj_mat = nx.to_numpy_array(G)  # Return the graph adjacency matrix as a NumPy matrix.
     return G,adj_mat
 
-def accuracy_metric(scores,probe_set):
+def accuracy_metric(scores:list,probe_set:np.ndarray | list)->float:
+    if type(probe_set) == list: probe_set = np.array(probe_set)
     L = probe_set.shape[0] 
     top_scores = np.array(scores)[:L,:2]
     l = sum([1 for edge_pair in probe_set if (edge_pair == top_scores).all(axis=1).any()])
+    l+= sum([1 for edge_pair in probe_set if (edge_pair[::-1] == top_scores).all(axis=1).any()])
     return l/L 
+    # top_scores = [f"{score[0]}{score[1]}" for score in top_scores]
+    # top_scores = top_scores + [f"{score[1]}{score[0]}" for score in top_scores] 
 
-def auc_metric(scores,train_set,probe_set,n=100,seed=1234):
+
+def auc_metric(scores: list,train_set: np.ndarray|list ,probe_set: np.ndarray|list,n:int=1000,seed:int=1234):
+    if type(probe_set) == list: probe_set = np.array(probe_set)
     len_probe = probe_set.shape[0]
     if n>len_probe: n=len_probe 
-    random.seed(a=1234, version=2)
+    random.seed(a=seed, version=2)
     
     # Getting the whole graph
     complete_edge_list = np.vstack((train_set,probe_set))
@@ -151,7 +157,7 @@ def auc_metric(scores,train_set,probe_set,n=100,seed=1234):
             elif (u in random_non_edge) and (v in random_non_edge): non_edge_score = score 
             
             # Exit condition when both of them are found 
-            if (probe_score != 0) and (non_edge_score!=0): break
+            if (probe_score!=0) and (non_edge_score!=0): break
         
         # Increase counters
         if probe_score > non_edge_score: n_1+=1  
@@ -164,4 +170,4 @@ def auc_metric(scores,train_set,probe_set,n=100,seed=1234):
 # if __name__ == "__main__":
 #     k_folds = jazz_generator() 
 #     # plot_full_graph(nx.from_edgelist(np.vstack(k_folds))) 
-#     use_newtorkx_viewer(k_folds) 
+#   e use_newtorkx_viewer(k_folds) 
