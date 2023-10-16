@@ -164,4 +164,4 @@ def auc_metric(scores,train_set,probe_set,n=100,seed=1234):
 if __name__ == "__main__":
     k_folds = jazz_generator() 
     plot_full_graph(k_folds) 
-    # use_newtorkx_viewer(k_folds) 
+    use_newtorkx_viewer(k_folds) 

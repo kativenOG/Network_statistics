@@ -2,8 +2,7 @@ import networkx as nx
 
 def sort_scores(piter,key=2,reverse=True):
     """
-    From an iterator return a list of sorted tuples (u,v,score). 
-    The default behavior is to sort the tuples on their scores from highest to lowest.
+    From an iterator return a list of sorted tuples (u,v,score). The default behavior is to sort the tuples on their scores from highest to lowest.
     The tuples can be sorted on nodes indexes by changing the key param 
     """
     piter = list(piter) 
