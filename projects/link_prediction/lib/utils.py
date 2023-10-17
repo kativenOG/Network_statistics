@@ -129,7 +129,7 @@ def accuracy_metric(scores:list,probe_set:np.ndarray | list)->float:
     # top_scores = top_scores + [f"{score[1]}{score[0]}" for score in top_scores] 
 
 
-def auc_metric(scores: list,train_set: np.ndarray|list ,probe_set: np.ndarray|list,n:int=1000,seed:int=1234):
+def auc_metric(scores: list,train_set: np.ndarray|list ,probe_set: np.ndarray|list,n:int=100,seed:int=1234):
     if type(probe_set) == list: probe_set = np.array(probe_set)
     len_probe = probe_set.shape[0]
     if n>len_probe: n=len_probe 

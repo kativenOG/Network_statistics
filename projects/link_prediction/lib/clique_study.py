@@ -48,7 +48,7 @@ def spectral_scores(G: nx.Graph,n_class:int =20)-> np.ndarray:
     # Return the eigen vectors that will work as a score for each ndoe :^)  
     return vecs_disjoint 
 
-def spectral_similarity(G: nx.Graph,n_class:int =20)->list[tuple[int,int,float]]:
+def spectral_similarity(G: nx.Graph,n_class:int =20,reverse:bool =False)-> list[tuple[int,int,float]]:
     # Maps for the two node numberings spectral_scores/without_clique
     mapping = { node:i for i,node in  enumerate(G.nodes())}
 
@@ -69,7 +69,7 @@ def spectral_similarity(G: nx.Graph,n_class:int =20)->list[tuple[int,int,float]]
 
     # Calculate the Scores 
     spectral_score = (tuple([u,v,formula(u,v)]) for u,v in non_edges)
-    return sort_scores(spectral_score,reverse=False) 
+    return sort_scores(spectral_score,reverse=reverse) 
 
 # For testing functions 
 # from utils import jazz_generator
