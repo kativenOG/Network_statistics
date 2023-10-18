@@ -32,7 +32,7 @@ source networkStats/bin/activate
 
 #### To run the config used to plot the graphs used in the Presentation type:
 ```
-cd project_1_pt1
+cd projects/spectral_clustering_pt1
 python main.py --mode "all" --save_log True --plt True --verbose True --n_vals 10 100 1000
 ```
 
@@ -45,18 +45,26 @@ python main.py --mode "all" --save_log True --plt True --verbose True --n_vals 1
   - --cc_analysis N     do the analys for every single connected component
   - --eigen_gap N       Index for the slicing during eigen gap process, if the value is set to -1 the user will be prompted to insert the input via stdin
   - --cluster_method N  Wich clustering methods has to be used on eigen Vectors.
-  - --n_class N         Number of classes the codes tries to infer.
+  - --n_class N         Number of classes the codes tries to infer.b
   - --laplacian N       Diffrent types of Laplacian Matrix
   - --pruning N         If we prune the graph or not
   - --pruning_factor N  Factor for the maximum size of the connected components that get pruned
 
 #### To run the clustering algorithm on each connected component type with n>20 type: 
 ```
-cd project_1_pt2
+cd projects/spectral_clustering_pt2
 python main.py 
 ```
 #### To run the clustering algorithm on the whole pruned graph (still with n>20) type: 
 ```
-cd project_1_pt2
+cd projects/spectral_clustering_pt2
 python main.py --cc_analysis False
 ```
+## Link Prediction:
+All the analysis we did for the second presentation on link prediction <br/> 
+using similarity methods can be found inside the following iPython notebook:
+```
+cd projects/link_predction
+# You can open it by simply using Visual Studio Code:
+code main.ipynb 
+``
