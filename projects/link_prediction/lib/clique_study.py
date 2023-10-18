@@ -20,7 +20,21 @@ def biggest_clique_removal(k_folds:list, n_cliques:int =1)-> tuple[nx.Graph,list
     union_of_cliques = set()
     probe_set = list(union_of_cliques.union(*biggest_cliques))
 
-    clique_edge_list = G.subgraph(probe_set).edges()
+    clique_edge_list = list(G.subgraph(probe_set).edges())
+
+    # direct_map, inverse_map = {},{}
+    # visited = set()
+    # for val in probe_set:  
+    #     visited.add(val)
+    # i = 0
+    # for val in sorted(list(visited)):
+    #     i+=1
+    #     direct_map[i] = val 
+    #     inverse_map[val ] = i
+    # clique_edge_list = list(map(lambda x: list([direct_map[x[0]], direct_map[x[1]]]),clique_edge_list))
+    
+    ic(len(clique_edge_list))
+    clique_edge_list = [ edge[::-1] for edge in clique_edge_list] + clique_edge_list
 
     # Removing both clique Nodes and Edges from OG graph 
     # full_set = set(G.nodes())
@@ -29,7 +43,9 @@ def biggest_clique_removal(k_folds:list, n_cliques:int =1)-> tuple[nx.Graph,list
     # Only removing clique Edges from OG graph 
     full_set = set(G.edges())
     correct_set = list(full_set.difference(set(clique_edge_list)))
-    # ic(correct_set)
+    ic(len(full_set))
+    ic(len(correct_set))
+    ic(len(full_set)-len(correct_set))
 
     return nx.from_edgelist(correct_set),clique_edge_list
 
