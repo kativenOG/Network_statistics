@@ -2,3 +2,4 @@ networkStats
 projects/*/outputs
 projects/link_prediction/figures
 projects/link_prediction/lib/figures
+projects/link_prediction/lib/outputs
