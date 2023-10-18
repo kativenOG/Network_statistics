@@ -1,5 +1,6 @@
 import networkx as nx 
 import numpy as np 
+from icecream import ic
 
 # Spectral sutff
 import warnings 
@@ -8,19 +9,27 @@ from .local_similarity import sort_scores
 from numpy import linalg as LA 
 
 def biggest_clique_removal(k_folds:list, n_cliques:int =1)-> tuple[nx.Graph,list]:
-    G = nx.from_edgelist(np.vstack(k_folds) )
+    G = nx.from_edgelist(np.vstack(k_folds))
 
     cliques = list(map(lambda x: set(x),nx.find_cliques(G)))
     cliques.sort(key=lambda x: len(x),reverse=True)
 
     biggest_cliques = cliques[:n_cliques]
-    full_set = set(G.nodes())
-    correct_set = full_set.difference(*biggest_cliques) 
-    
     union_of_cliques = set()
     probe_set = list(union_of_cliques.union(*biggest_cliques))
 
-    return G.subgraph(correct_set),G.subgraph(probe_set).edges()
+    clique_edge_list = G.subgraph(probe_set).edges()
+
+    # Removing both clique Nodes and Edges from OG graph 
+    # full_set = set(G.nodes())
+    # correct_set = full_set.difference(*biggest_cliques) 
+
+    # Only removing clique Edges from OG graph 
+    full_set = set(G.edges())
+    correct_set = list(full_set.difference(set(clique_edge_list)))
+    # ic(correct_set)
+
+    return nx.from_edgelist(correct_set),clique_edge_list
 
     
 def spectral_scores(G: nx.Graph,n_class:int =20)-> np.ndarray:
@@ -48,7 +57,7 @@ def spectral_scores(G: nx.Graph,n_class:int =20)-> np.ndarray:
     # Return the eigen vectors that will work as a score for each ndoe :^)  
     return vecs_disjoint 
 
-def spectral_similarity(G: nx.Graph,n_class:int =20,reverse:bool =False)-> list[tuple[int,int,float]]:
+def spectral_similarity(G: nx.Graph,n_class:int =20,reverse:bool = False)-> list[tuple[int,int,float]]:
     # Maps for the two node numberings spectral_scores/without_clique
     mapping = { node:i for i,node in  enumerate(G.nodes())}
 
@@ -62,9 +71,10 @@ def spectral_similarity(G: nx.Graph,n_class:int =20,reverse:bool =False)-> list[
     non_edges = nx.non_edges(G)
     
     def formula(x: np.ndarray,y: np.ndarray)->float:
-        cn = len(list(nx.common_neighbors(G,x,y)))
+        # cn = len(list(nx.common_neighbors(G,x,y)))
         norm_x,norm_y = LA.norm(x),LA.norm(y)
         cosine_similarity = np.dot(ss[mapping[x],:],ss[mapping[y],:])/(norm_x*norm_y)
+        return cosine_similarity
         return cn*cosine_similarity
 
     # Calculate the Scores 
