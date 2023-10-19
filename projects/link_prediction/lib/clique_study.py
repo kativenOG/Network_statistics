@@ -94,13 +94,13 @@ def spectral_similarity(G: nx.Graph,n_class:int =20,reverse:bool = False,eigen_g
     # Average Distance used to normalize the value 
     avg_dist = np.mean(pdist(ss).flatten())
 
-    def formula(x: np.ndarray,y: np.ndarray):
-        cn = len(list(nx.common_neighbors(G,x,y)))
+    def formula(x: np.ndarray,y: np.ndarray)->np.float64:
+        # cn = len(list(nx.common_neighbors(G,x,y)))
         norm = LA.norm(x-y)
-        # return cosine_similarity
-        
-        similarity = cn/norm
+        similarity = 1/norm
+        # similarity = cn/norm
         return similarity
+
 
     def old_formula(x: np.ndarray,y: np.ndarray)->float:
         cn = len(list(nx.common_neighbors(G,x,y)))
