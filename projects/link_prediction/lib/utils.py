@@ -4,25 +4,25 @@ import numpy as np
 import os,shutil,subprocess,random
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from networkx_viewer import Viewer
+# from networkx_viewer import Viewer
 
 def jazz_generator(k=10):
     """
     Download the dataset and return it as a list of k folds 
     """
-    # Get rid of old repositories if present (just to be sure)
-    dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"jazz.net")
-    if os.path.isdir(dir1): shutil.rmtree(dir1)
-    if os.path.isdir(dir2): shutil.rmtree(dir2)
+    # # Get rid of old repositories if present (just to be sure)
+    # dir1,dir2  =  os.path.join(os.getcwd(),"{}"),os.path.join(os.getcwd(),"jazz.net")
+    # if os.path.isdir(dir1): shutil.rmtree(dir1)
+    # if os.path.isdir(dir2): shutil.rmtree(dir2)
 
-    # Download the dataset and unzip it 
-    subprocess.run(["wget","--no-check-certificate","-P","{}","https://deim.urv.cat/~alexandre.arenas/data/xarxes/jazz.zip"])
-    subprocess.run(["unzip","{}/jazz.zip"])
+    # # Download the dataset and unzip it 
+    # subprocess.run(["wget","--no-check-certificate","-P","{}","https://deim.urv.cat/~alexandre.arenas/data/xarxes/jazz.zip"])
+    # subprocess.run(["unzip","{}/jazz.zip"])
      
     # Save all the lines in the Graph
-    with open("jazz.net","r") as f: lines = f.readlines()        
+    with open("C://Users//20182667//Documents//Studie//Vakken//Master//Network Statistics//Network_statistics//projects//link_prediction//lib//jazz.net","r") as f: lines = f.readlines()        
     # Get rid of the Data 
-    subprocess.run(["rm","-rf","{}","jazz.net"]) 
+    # subprocess.run(["rm","-rf","{}","jazz.net"]) 
     
     # Transformation to edge list
     data= [list(map(lambda x: int(x),line.split())) for line in lines[3:]]
@@ -57,7 +57,7 @@ def get_max_connected_component(k_folds)-> nx.Graph:
      """
      full_edge_list = np.vstack(k_folds) 
      full_G = nx.from_edgelist(full_edge_list)
-     print(f"The number of connected components is: {len(list(nx.connected_components(full_G)))}\n")
+     print(f"The number of connected components is: {len(list(nx.connected_components(full_G)))}//n")
      max_cc = max(nx.connected_components(full_G))
      G = nx.subgraph(full_G,max_cc)
      return G 
