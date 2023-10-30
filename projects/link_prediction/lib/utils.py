@@ -1,4 +1,4 @@
-from os.path import isdir
+from icecream import ic
 import networkx as nx 
 import numpy as np 
 import os,shutil,subprocess,random
@@ -122,6 +122,7 @@ def accuracy_metric(scores:list,probe_set:np.ndarray | list)->float:
     if type(probe_set) == list: probe_set = np.array(probe_set)
     L = probe_set.shape[0] 
     top_scores = np.array(scores)[:L,:2]
+    ic(top_scores)
     l = sum([1 for edge_pair in probe_set if (edge_pair == top_scores).all(axis=1).any()])
     l+= sum([1 for edge_pair in probe_set if (edge_pair[::-1] == top_scores).all(axis=1).any()])
     return l/L 
